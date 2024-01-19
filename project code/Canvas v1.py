@@ -58,13 +58,14 @@ class DraggableButton(Button):
     def on_release(self, event):
         if dragging:
             print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
-            snap()
+            snap(self,"draggable_button")
         else:
             print("Button was pressed")
 
-buttons = []
+
 def canvasmenu():
     # Create a draggable button
+    global draggable_button, second_button
     draggable_button = DraggableButton(canvaswind, text="Drag Me", command=lambda: print("pressed!!!"))
     draggable_button.pack()
     second_button = DraggableButton(canvaswind, text="Drag Me Too")
@@ -85,6 +86,7 @@ def actionmenu():
         new_button = DraggableButton(canvaswind, text=f"Button {len(buttons) + 1}")
         new_button.pack(pady=5)
         buttons.append(new_button)
+        print(buttons)
 
     def move_button(x, y):
         draggable_button.place(x=x, y=y)
