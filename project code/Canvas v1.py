@@ -9,26 +9,46 @@ os.chdir(Path(__file__).parent)
 
 def windows():
     global actionwind,canvaswind
-    actionwind = Tk()
-    actionwind.title("Action menu")
     canvaswind = Tk()
     canvaswind.title("Canvasmenu")
-    actionwind.geometry("200x100")
     canvaswind.geometry("600x400")
+    actionwind = Toplevel(canvaswind)
+    actionwind.title("Action menu")
+    actionwind.geometry("200x100")
 
-def snap(movingwidget, stillwidget):
-        X = stillwidget.winfo_x()
-        Y = stillwidget.winfo_y()
+def discovery(movingwidget):
+    widgets = []
+    for widget in canvaswind.winfo_children():
+        widgets.append(str(widget))
+    print(movingwidget)
+    print(widgets)
+    widgets.remove(str(movingwidget))
+    print(widgets)
+    for widget in widgets:
+        X = widget.winfo_x()
+        Y = widget.winfo_y()
         x = movingwidget.winfo_x()
         y = movingwidget.winfo_y()
         if x-X <= 75 and x-X >= -75:
             if y-Y <= 40 and y-Y >=0:
                 print("Snapped!")
                 movingwidget.place(x=X, y=Y+24)
-
             elif Y-y <= 40 and Y-y >=0: #Checks if the button is ontop of the other one
                 print("Negative Snapped!")
                 movingwidget.place(x=X, y=Y+24)
+
+def snap(movingwidget, stillwidget):
+    X = stillwidget.winfo_x()
+    Y = stillwidget.winfo_y()
+    x = movingwidget.winfo_x()
+    y = movingwidget.winfo_y()
+    if x-X <= 75 and x-X >= -75:
+        if y-Y <= 40 and y-Y >=0:
+            print("Snapped!")
+            movingwidget.place(x=X, y=Y+24)
+        elif Y-y <= 40 and Y-y >=0: #Checks if the button is ontop of the other one
+            print("Negative Snapped!")
+            movingwidget.place(x=X, y=Y+24)
 
 class DraggableButton(Button):
     def __init__(self, master=None, **kwargs):
@@ -57,8 +77,8 @@ class DraggableButton(Button):
 
     def on_release(self, event):
         if dragging:
-            print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
-            snap(self,"draggable_button")
+            # print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
+            discovery(self)
         else:
             print("Button was pressed")
 
@@ -74,8 +94,6 @@ def canvasmenu():
     # Create a button to check the location
     check_location_button = Button(actionwind, text="Check Location", command=get_button_location)
     check_location_button.pack()
-    
-    actionwind.mainloop()
 
     
 
@@ -108,15 +126,15 @@ def get_button_location():
     print("Button Location: x={}, y={}".format(draggable_button.winfo_x(), draggable_button.winfo_y()))
 # Function to get the current location of the button
 
-
-
-
-
+# def clear():
+#     for widget in div.winfo_children():
+#         widget.destroy() #Used this instead of forget to clear memory
+        
 
 
 
 
 # Run the Tkinter event loop
 windows()
-actionmenu()
 canvasmenu()
+actionmenu()
