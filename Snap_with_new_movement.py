@@ -22,7 +22,7 @@ def snap():
                 second_button.place(x=X, y=Y+24)
 
 class DraggableButton(Button):
-    def __init__(self, master=None, **kwargs):
+    def __init__(self, master=None, **kwargs): #Not sure what master=None does
         Button.__init__(self, master, **kwargs)
         self.bind("<ButtonPress-1>", self.on_press)
         self.bind("<Button-1>", self.on_drag_start)
