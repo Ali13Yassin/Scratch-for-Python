@@ -13,7 +13,7 @@ def savepy(exponame,projcode):
         print("file name exists")
         return False
 
-def pyW(filename,projcode): #Converts dict to CSV
+def pyW(filename,projcode): #This could be used to write anyfile needed not just py ones
     file = open(filename, "w")
     file.write(projcode)
     print("Written!")
