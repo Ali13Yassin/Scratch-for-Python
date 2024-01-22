@@ -16,44 +16,26 @@ def windows():
     actionwind.title("Action menu")
     actionwind.geometry("200x100")
 
-def discovery(movingwidget):
+def basic_snap(movingwidget):
     #A potential fix to all this is using the latest prompt in chatgpt (find() or in) to filter EACH
     #widget in the list then removing that item, which is not ideal but does the job for now
     #a complicated fix for such a small issue like what the fuck
     widgets = {}
-    
     for widget in canvaswind.winfo_children():
         widgets[str(widget)] = widget
-    print(movingwidget)
-    print(widgets)
     del widgets[str(movingwidget)]
-    print(widgets)
+    del widgets[".!toplevel"] #Broken if window is closed
     for key in widgets:
-        print(widgets[key])
-        X = widgets[key].winfo_x()
-        Y = widgets[key].winfo_y()
-        x = movingwidget.winfo_x()
-        y = movingwidget.winfo_y()
-        if x-X <= 75 and x-X >= -75:
-            if y-Y <= 40 and y-Y >=0:
-                print("Snapped!")
-                movingwidget.place(x=X, y=Y+24)
-            elif Y-y <= 40 and Y-y >=0: #Checks if the button is ontop of the other one
-                print("Negative Snapped!")
-                movingwidget.place(x=X, y=Y+24)
-
-def snap(movingwidget, stillwidget):
-    X = stillwidget.winfo_x()
-    Y = stillwidget.winfo_y()
-    x = movingwidget.winfo_x()
-    y = movingwidget.winfo_y()
-    if x-X <= 75 and x-X >= -75:
-        if y-Y <= 40 and y-Y >=0:
-            print("Snapped!")
-            movingwidget.place(x=X, y=Y+24)
-        elif Y-y <= 40 and Y-y >=0: #Checks if the button is ontop of the other one
-            print("Negative Snapped!")
-            movingwidget.place(x=X, y=Y+24)
+        #Coordinates and size [X,Y,height,width], might change it to a dict for readaility
+        solid_loc = [widgets[key].winfo_x(), widgets[key].winfo_y(), widgets[key].winfo_height(), widgets[key].winfo_width()]
+        moving_loc = [movingwidget.winfo_x(), movingwidget.winfo_y(), movingwidget.winfo_height(), movingwidget.winfo_width()]
+        if moving_loc[0]-solid_loc[0] <= 25 and moving_loc[0]-solid_loc[0] >= -25:
+            if moving_loc[1]-solid_loc[1] <= solid_loc[2]+25 and moving_loc[1]-solid_loc[1] >=0:
+                print("Snapped to {}".format(key))
+                movingwidget.place(x=solid_loc[0], y=solid_loc[1]+solid_loc[2])
+            elif solid_loc[1]-moving_loc[1] <= moving_loc[2]+15 and solid_loc[1]-moving_loc[1] >=0: #Checks if the button is ontop of the other one
+                print("Negative Snapped to {}".format(key))
+                movingwidget.place(x=solid_loc[0], y=solid_loc[1]-moving_loc[2])
 
 class DraggableButton(Button):
     def __init__(self, master=None, **kwargs):
@@ -72,6 +54,7 @@ class DraggableButton(Button):
     def on_drag_start(self, event): #Happens when button is clickeed or once when dragged
         self._drag_start_x = event.x
         self._drag_start_y = event.y
+        self.lift()
         global dragging
         dragging = True
 
@@ -83,7 +66,7 @@ class DraggableButton(Button):
     def on_release(self, event):
         if dragging:
             # print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
-            discovery(self)
+            basic_snap(self)
         else:
             print("Button was pressed")
 
@@ -92,7 +75,7 @@ def canvasmenu():
     global draggable_button, second_button
     draggable_button = DraggableButton(canvaswind, text="Drag Me", command=lambda: print("pressed!!!"))
     draggable_button.pack()
-    second_button = DraggableButton(canvaswind, text="Drag Me Too")
+    second_button = DraggableButton(canvaswind, text="Drag Me\nToo")
     second_button.pack()
     
     # Create a button to check the location
