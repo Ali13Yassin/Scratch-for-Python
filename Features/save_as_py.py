@@ -21,3 +21,9 @@ def pyW(filename,projcode): #This could be used to write anyfile needed not just
 
 #Example of how this funtion needs to be called
 savepy("Test","print('This code works too!')")
+
+#Not tested yet
+def runcode(): #Can be used to run the user's project after completion
+    script_path = 'C:\\Users\\SUT\\Downloads\\Scratch for Python\\Snap_with_new_movement.py'
+    with open(script_path, 'r') as script_file:
+        exec(script_file.read())
