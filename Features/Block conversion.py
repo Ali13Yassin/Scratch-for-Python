@@ -12,11 +12,46 @@ blocks = [{
     }
 ]
 block_data = {
+    "0":{
+        "name":"Start block",
+        "btype":"starter",
+        "color":"yellow",
+        "code":""
+    },
     "1":{
         "name":"print",
-        "type":"block",
+        "btype":"block",
+        "color":"blue",
         "code":"print({})",
         "num_values":1
+    },
+    "2":{
+        "name":"Set Variable {} as {}",
+        "btype":"block",
+        "color":"orange",
+        "code":"{} = {}",
+        "values":{
+            "name":"text",
+            "value":"any"
+        }
+    },
+    "custom":{
+        "name":"Custom code",
+        "btype":"block",
+        "color":"purple",
+        "code":"",
+        "values":{
+            "value1":"text"
+        }
+    },
+    "Template":{
+        "name":"",
+        "btype":"",
+        "color":"",
+        "code":"",
+        "values":{
+            "value1":"text"
+        }
     }
 }
 conversion(blocks)
