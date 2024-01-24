@@ -1,13 +1,19 @@
 def conversion(blocks):
     for block in blocks:
         code = block_data[block["block_id"]]["code"]
-        total_code = code.format(block["values"])
+        for value in block["values"]:
+            total_code = code.format(value) #Needs to work for when there are multiple required values
         print(total_code)
 
 
 blocks = [{
         "block_type":"print",
         "block_id":"1",
+        "values":"hello world"
+    },
+    {
+        "block_type":"print",
+        "block_id":"Template",
         "values":"hello world"
     }
 ]
@@ -48,7 +54,7 @@ block_data = {
         "name":"",
         "btype":"",
         "color":"",
-        "code":"",
+        "code":"code{}",
         "values":{
             "value1":"text"
         }
