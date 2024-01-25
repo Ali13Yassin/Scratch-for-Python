@@ -17,16 +17,22 @@ blocks = [{
         "values":"hello world"
     }
 ]
+
+#Starters = 0
+#Normal = 1
+#Control blocks = 2
+#circle values = 3
+#Angular conditions = 4
 block_data = {
     "0":{
         "name":"Start block",
-        "btype":"starter",
+        "btype":"0",
         "color":"yellow",
         "code":""
     },
     "1":{
         "name":"print",
-        "btype":"block",
+        "btype":"1",
         "color":"blue",
         "code":"print({})",
         "num_values":1

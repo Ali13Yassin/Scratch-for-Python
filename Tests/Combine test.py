@@ -62,11 +62,8 @@ def clear():
         widget.destroy() #Used this instead of forget to clear memory
 
 def basic_snap(movingwidget):
-    #A potential fix to all this is using the latest prompt in chatgpt (find() or in) to filter EACH
-    #widget in the list then removing that item, which is not ideal but does the job for now
-    #a complicated fix for such a small issue like what the fuck
     widgets = {}
-    for widget in playground.winfo_children():
+    for widget in div.winfo_children():
         widgets[str(widget)] = widget
     del widgets[str(movingwidget)]
     # del widgets[".!toplevel"] #Broken if window is closed
@@ -139,9 +136,9 @@ def playgroundmenu():
     sidebar.place(relx=0.7, rely=0, relwidth=0.3, relheight=1)
 
     global draggable_button, second_button
-    draggable_button = DraggableButton(playground, text="Drag Me", command=lambda: print("pressed!!!"))
+    draggable_button = DraggableButton(div, text="Drag Me", command=lambda: print("pressed!!!"))
     draggable_button.pack()
-    second_button = DraggableButton(playground, text="Drag Me\nToo")
+    second_button = DraggableButton(div, text="Drag Me\nToo")
     second_button.pack()
 
 #------------------------------------<Playground End>-------------------------------------------------------

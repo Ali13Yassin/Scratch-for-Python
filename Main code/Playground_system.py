@@ -17,9 +17,6 @@ def windows():
     actionwind.geometry("200x100")
 
 def basic_snap(movingwidget):
-    #A potential fix to all this is using the latest prompt in chatgpt (find() or in) to filter EACH
-    #widget in the list then removing that item, which is not ideal but does the job for now
-    #a complicated fix for such a small issue like what the fuck
     widgets = {}
     for widget in canvaswind.winfo_children():
         widgets[str(widget)] = widget
