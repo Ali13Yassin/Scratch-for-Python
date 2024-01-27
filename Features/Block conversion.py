@@ -15,9 +15,16 @@ blocks = [{
         "block_type":"print",
         "block_id":"Template",
         "values":"hello world"
+    },
+    {
+        "block_type":"",
+        "block_id":"",
+        "values":{
+
+        }
     }
 ]
-
+#Types of Blocks:
 #Starters = 0
 #Normal = 1
 #Control blocks = 2
@@ -43,7 +50,7 @@ block_data = {
         "color":"orange",
         "code":"{} = {}",
         "values":{
-            "name":"text",
+            "name":"str",
             "value":"any"
         }
     },
@@ -64,6 +71,30 @@ block_data = {
         "values":{
             "value1":"text"
         }
+    }
+}
+block_types = {
+    "0":{
+        "block_img":"img",
+        "snap":"bottom",
+    }
+}
+
+var_types = {
+    "0":{ #Input
+        "code":"input({})"
+    },
+    "1": { #Bolean
+        "code":"{}"
+    }, #String
+    "2":{
+        "code":'"{}"'
+    },
+    "3":{ #Int
+        "code":"{}"
+    },
+    "4":{ #Float
+        "code":"{}"
     }
 }
 conversion(blocks)
