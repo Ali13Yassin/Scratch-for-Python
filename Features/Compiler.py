@@ -12,7 +12,7 @@ all_blocks = {
         "name":"Start block",
         "btype":"0",
         "color":"yellow",
-        "code":""
+        "code":"#Code starts here"
     },
     "1":{
         "name":"print",
@@ -73,23 +73,22 @@ var_types = {
 def compileblocks(blocks):
     lines = ""
     for block in blocks:
-        var = []
-        code = all_blocks[block["block_id"]]["code"]
+        var = [] #This will store all the values to format into the code
+        code = all_blocks[block["block_id"]]["code"] #Get the code
         for key in block["values"]:
-            if block["values"][key][1].isdigit():
-                varcode = var_types[block["values"][key][1]]["code"]
-                var.append(varcode.format(block["values"][key][0]))
+            if block["values"][key][1].isdigit(): #If value type is a number
+                varcode = var_types[block["values"][key][1]]["code"] #Get the code for the value type
+                var.append(varcode.format(block["values"][key][0])) #Add the value to the var list
             else:
-                var.append(smol_compile(key, block["values"][key]))
-        line = code.format(*var)
-        lines = lines + line + "\n"
-        # lines.append(line)
-        # lines.append("\n")
-    return lines
-            
-def smol_compile(key, value):
+                var.append(smol_compile(key, block["values"][key])) #Add the value to the var list
+        line = code.format(*var) #Format the code with the values
+        lines = lines + line + "\n" #Add the line to the total code
+    return lines #Return the total code
+
+#This will compile the values inside the small blocks and return code
+def smol_compile(key, value): 
     # if int(all_blocks[block["block_id"]]["btype"]) > 2:
-    print("does nothing yet")
+    print("does nothing yet") 
 
 blocks = [
     {
@@ -101,16 +100,17 @@ blocks = [
     },
     {
         "block_type":"1",#Normal
-        "block_id":"1",
+        "block_id":"0",
         "values":{
             "value1":["This is a test","0"]
                   }
     },
     {
         "block_type":"1",#Normal
-        "block_id":"1",
+        "block_id":"2",
         "values":{
-            "value1":["That the compiler works","3"]
+            "value1":["That the compiler works","2"],
+            "value2":["test","2"]
                   }
     }
 ]
