@@ -23,9 +23,9 @@ def basic_snap(movingwidget,event):
                 print("Negative Snapped to {}".format(key))
                 movingwidget.place(x=solid_loc[0], y=solid_loc[1]-moving_loc[2])
 
-class DraggableButton(Button):
+class DraggableWidget(Label):
     def __init__(self, master, **kwargs):
-        Button.__init__(self, master, **kwargs)
+        Label.__init__(self, master, **kwargs)
         self.bind("<ButtonPress-1>", self.on_press)
         self.bind("<Button-1>", self.on_drag_start)
         self.bind("<B1-Motion>", self.on_drag_motion)
@@ -57,8 +57,8 @@ class DraggableButton(Button):
         else:
             print("Button was pressed")
 
-def spawnplayground(parent):
-    draggable_button = DraggableButton(parent, text="Drag Me", command=lambda: print("pressed!!!"))
+def spawnplayground(parent): #Should spawn all buttons in all_widgets
+    draggable_button = DraggableWidget(parent, text="Drag Me", font=(100))
     draggable_button.pack()
-    second_button = DraggableButton(parent, text="Drag Me\nToo")
+    second_button = DraggableWidget(parent, text="Drag Me\nToo", font=(50))
     second_button.pack()

@@ -4,7 +4,7 @@ from tkinter import messagebox #This is a function that allows making windows me
 from tkinter.ttk import * #Theamed tkinter which makes the UI look ever so slightly modern
 import os
 from pathlib import Path
-from playground_merger import *
+from playground import *
 
 os.chdir(Path(__file__).parent) #Changes cmd directory to the one that has the py file
 
@@ -68,7 +68,6 @@ def playgroundmenu():
     #I need to call a function from the playground system that creates the playground, so that playground system isn't tied to the main code
     total_width = wind.winfo_width()
 
-    # 70% for playground
     playground_width = int(total_width * 70)
     frame_style = Style()
     frame_style.configure("playground.TFrame", background="#2e2e2e")
@@ -76,7 +75,6 @@ def playgroundmenu():
     playground.configure(style="playground.TFrame")
     playground.place(relx=0, rely=0, relwidth=0.7, relheight=1)
 
-    # 30% for sidebar
     sidebar_width = int(total_width * 0.3)
     frame_style = Style()
     frame_style.configure("sidebar.TFrame", background="#c4c4c4")
