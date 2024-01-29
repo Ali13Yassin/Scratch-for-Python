@@ -37,7 +37,7 @@ all_blocks = {
         "color":"purple",
         "code":"",
         "values":{
-            "value1":"text"
+            "value1":"custom"
         }
     },
     "Template":{
@@ -58,14 +58,17 @@ var_types = {
     },
     "1": { #Bolean
         "code":"{}"
-    }, #String
-    "2":{
+    }, 
+    "2":{ #String
         "code":'"{}"'
     },
     "3":{ #Int
         "code":"int({})"
     },
     "4":{ #Float
+        "code":"float({})"
+    },
+    "custom":{ #Custom code
         "code":"{}"
     }
 }

@@ -2,23 +2,23 @@
 from tkinter import * #The UI module that this program relies on
 from tkinter import messagebox #This is a function that allows making windows message boxes, has to be called separetly
 from tkinter.ttk import * #Theamed tkinter which makes the UI look ever so slightly modern
-import os #Used to change directory, and other things
-from pathlib import Path #Used to get the path to the python file
+# import os #Used to change directory, and other things
+# from pathlib import Path #Used to get the path to the python file
 
-os.chdir(Path(__file__).parent)
+# os.chdir(Path(__file__).parent)
 
-def windows():
-    global actionwind,canvaswind
-    canvaswind = Tk()
-    canvaswind.title("Canvasmenu")
-    canvaswind.geometry("600x400")
-    actionwind = Toplevel(canvaswind)
-    actionwind.title("Action menu")
-    actionwind.geometry("200x100")
+# def windows():
+#     # global actionwind,canvaswind
+#     canvaswind = Tk()
+#     canvaswind.title("Canvas menu")
+#     canvaswind.geometry("600x400")
+#     actionwind = Toplevel(canvaswind)
+#     actionwind.title("Debug menu")
+#     actionwind.geometry("200x100")
 
-def basic_snap(movingwidget):
+def basic_snap(parent,movingwidget):
     widgets = {}
-    for widget in canvaswind.winfo_children():
+    for widget in parent.winfo_children():
         widgets[str(widget)] = widget
     del widgets[str(movingwidget)]
     del widgets[".!toplevel"] #Broken if window is closed
@@ -63,50 +63,13 @@ class DraggableButton(Button):
     def on_release(self, event):
         if dragging:
             # print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
-            basic_snap(self)
+            
+            basic_snap(self.nametowidget(self.winfo_parent()).winfo_name(),self)
         else:
             print("Button was pressed")
 
-def canvasmenu():
-    # Create a draggable button
-    global draggable_button, second_button
-    draggable_button = DraggableButton(canvaswind, text="Drag Me", command=lambda: print("pressed!!!"))
+def spawnplayground(parent):
+    draggable_button = DraggableButton(parent, text="Drag Me", command=lambda: print("pressed!!!"))
     draggable_button.pack()
-    second_button = DraggableButton(canvaswind, text="Drag Me\nToo")
+    second_button = DraggableButton(parent, text="Drag Me\nToo")
     second_button.pack()
-    
-    # Create a button to check the location
-    check_location_button = Button(actionwind, text="Check Location", command=get_button_location)
-    check_location_button.pack()
-    
-def actionmenu():
-    def add_button():
-        new_button = DraggableButton(canvaswind, text=f"Button {len(buttons) + 1}")
-        new_button.pack(pady=5)
-        buttons.append(new_button)
-        print(buttons)
-
-    def move_button(x, y):
-        draggable_button.place(x=x, y=y)
-    
-    buttons = []
-
-    # Create a button to add more buttons
-    add_button = Button(actionwind, text="Add Button", command=add_button)
-    add_button.pack(pady=10)
-    move_button_button = Button(actionwind, text="Move Button", command=lambda: move_button(100, 100))
-    move_button_button.pack()
-    canvaswind.mainloop()
-
-def get_button_location():
-    print("Button Location: x={}, y={}".format(draggable_button.winfo_x(), draggable_button.winfo_y()))
-# Function to get the current location of the button
-
-# def clear():
-#     for widget in div.winfo_children():
-#         widget.destroy() #Used this instead of forget to clear memory
-
-# Run the Tkinter event loop
-windows()
-canvasmenu()
-actionmenu()
