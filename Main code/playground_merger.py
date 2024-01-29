@@ -2,26 +2,15 @@
 from tkinter import * #The UI module that this program relies on
 from tkinter import messagebox #This is a function that allows making windows message boxes, has to be called separetly
 from tkinter.ttk import * #Theamed tkinter which makes the UI look ever so slightly modern
-# import os #Used to change directory, and other things
-# from pathlib import Path #Used to get the path to the python file
 
-# os.chdir(Path(__file__).parent)
-
-# def windows():
-#     # global actionwind,canvaswind
-#     canvaswind = Tk()
-#     canvaswind.title("Canvas menu")
-#     canvaswind.geometry("600x400")
-#     actionwind = Toplevel(canvaswind)
-#     actionwind.title("Debug menu")
-#     actionwind.geometry("200x100")
-
-def basic_snap(parent,movingwidget):
+def basic_snap(movingwidget,event):
     widgets = {}
+    parentName = event.widget.winfo_parent()
+    parent = event.widget._nametowidget(parentName)
     for widget in parent.winfo_children():
         widgets[str(widget)] = widget
     del widgets[str(movingwidget)]
-    del widgets[".!toplevel"] #Broken if window is closed
+    # del widgets[".!toplevel"] #Broken if window is closed
     for key in widgets:
         #Coordinates and size [X,Y,height,width], might change it to a dict for readaility
         solid_loc = [widgets[key].winfo_x(), widgets[key].winfo_y(), widgets[key].winfo_height(), widgets[key].winfo_width()]
@@ -35,7 +24,7 @@ def basic_snap(parent,movingwidget):
                 movingwidget.place(x=solid_loc[0], y=solid_loc[1]-moving_loc[2])
 
 class DraggableButton(Button):
-    def __init__(self, master=None, **kwargs):
+    def __init__(self, master, **kwargs):
         Button.__init__(self, master, **kwargs)
         self.bind("<ButtonPress-1>", self.on_press)
         self.bind("<Button-1>", self.on_drag_start)
@@ -64,7 +53,7 @@ class DraggableButton(Button):
         if dragging:
             # print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
             
-            basic_snap(self.nametowidget(self.winfo_parent()).winfo_name(),self)
+            basic_snap(self,event)
         else:
             print("Button was pressed")
 
