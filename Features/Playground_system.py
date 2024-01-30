@@ -30,9 +30,25 @@ def basic_snap(movingwidget):
             if moving_loc[1]-solid_loc[1] <= solid_loc[2]+25 and moving_loc[1]-solid_loc[1] >=0:
                 print("Snapped to {}".format(key))
                 movingwidget.place(x=solid_loc[0], y=solid_loc[1]+solid_loc[2])
+                snap_log(movingwidget, widgets[key])
             elif solid_loc[1]-moving_loc[1] <= moving_loc[2]+15 and solid_loc[1]-moving_loc[1] >=0: #Checks if the button is ontop of the other one
                 print("Negative Snapped to {}".format(key))
                 movingwidget.place(x=solid_loc[0], y=solid_loc[1]-moving_loc[2])
+
+def snap_log(movingwidget, stillwidget):
+    global snaplog
+    snaplog = []
+    recsnapped = {
+        "widget id": movingwidget,
+        "snapped to": stillwidget,
+        "block_id": "0",
+        "values": {
+            "valu1":["Hello world", "2"],
+            "valu2":["world hello", "2"],
+        }
+    }
+    snaplog.append(recsnapped)
+    print(snaplog)
 
 class DraggableButton(Button):
     def __init__(self, master=None, **kwargs):
