@@ -8,7 +8,7 @@ from playground import *
 
 os.chdir(Path(__file__).parent) #Changes cmd directory to the one that has the py file
 
-#Checks if the required python files exist, To be implemented...
+# Checks if the required python files exist, To be implemented...
 # if os.path.exists("Corefunctions.py") and os.path.exists("Exportfunctions.py"):
 #     from Corefunctions import * #The library I made that handles backend operations
 #     from Exportfunctions import * #The library I made that exports information
@@ -16,11 +16,20 @@ os.chdir(Path(__file__).parent) #Changes cmd directory to the one that has the p
 #     messagebox.showerror("Error", "Critical files are missing, please redownload the application to function properly.")
 #     quit()
 
+#Checks if the debug file exists, and if it does, imports it
+if os.path.exists("debug.py"):
+    from debug import * #The library I made that handles backend operations
+    debugging = True
+else:
+    debugging = False
+
 #Starts the program
 def start():
     # filecheck()#Checks if other database files exist and creates them
     window() #Defines properties of the main window
     mainmenu() #The first menu to the application
+    if debugging:
+        load_debug(wind) #Loads the debug menu
     wind.mainloop() #Makes the window apear
 
 def window():
