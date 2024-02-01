@@ -77,15 +77,12 @@ def playgroundmenu():
     #I need to call a function from the playground system that creates the playground, so that playground system isn't tied to the main code
     total_width = wind.winfo_width()
 
-    playground_width = int(total_width * 70)
     frame_style = Style()
     frame_style.configure("playground.TFrame", background="#2e2e2e")
     playground = Frame(div, style="playground.TFrame")
     playground.configure(style="playground.TFrame")
     playground.place(relx=0, rely=0, relwidth=0.7, relheight=1)
 
-    sidebar_width = int(total_width * 0.3)
-    frame_style = Style()
     frame_style.configure("sidebar.TFrame", background="#c4c4c4")
     sidebar = Frame(div, style="sidebar.TFrame")
     sidebar.configure(style="sidebar.TFrame")

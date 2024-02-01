@@ -10,7 +10,8 @@ def basic_snap(movingwidget,event):
     for widget in parent.winfo_children():
         widgets[str(widget)] = widget
     del widgets[str(movingwidget)]
-    del widgets[".!toplevel"] #Broken if window is closed
+    if ".!toplevel" in widgets:
+        del widgets[".!toplevel"] #Broken if window is closed
     for key in widgets:
         #Coordinates and size [X,Y,height,width], might change it to a dict for readaility
         solid_loc = [widgets[key].winfo_x(), widgets[key].winfo_y(), widgets[key].winfo_height(), widgets[key].winfo_width()]

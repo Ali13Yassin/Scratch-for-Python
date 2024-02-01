@@ -5,6 +5,7 @@
 #3.Take input values
 #4.Transfer all info to code
 #5.Restart proccess for next line
+from export import *
 
 #Define all blocks
 all_blocks = {
@@ -117,4 +118,10 @@ blocks = [
                   }
     }
 ]
+
+#The function that has to be called from main.py
+def startcompile(projname, blocks):
+    lines = compileblocks(blocks)
+    savepy(projname, lines)
+
 print(compileblocks(blocks))
