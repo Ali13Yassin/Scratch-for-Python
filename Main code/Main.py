@@ -80,12 +80,10 @@ def playgroundmenu():
     frame_style = Style()
     frame_style.configure("playground.TFrame", background="#2e2e2e")
     playground = Frame(div, style="playground.TFrame")
-    playground.configure(style="playground.TFrame")
     playground.place(relx=0, rely=0, relwidth=0.7, relheight=1)
 
     frame_style.configure("sidebar.TFrame", background="#c4c4c4")
     sidebar = Frame(div, style="sidebar.TFrame")
-    sidebar.configure(style="sidebar.TFrame")
     sidebar.place(relx=0.7, rely=0, relwidth=0.3, relheight=1)
 
     Button(playground, text="playground", command=mainmenu).pack()

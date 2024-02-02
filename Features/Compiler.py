@@ -16,7 +16,7 @@ all_blocks = {
         "code":"#Code starts here"
     },
     "1":{
-        "name":"print",
+        "name":"print {}",
         "btype":"1",
         "color":"blue",
         "code":"print({})",
@@ -123,5 +123,4 @@ blocks = [
 def startcompile(projname, blocks):
     lines = compileblocks(blocks)
     savepy(projname, lines)
-
 print(compileblocks(blocks))

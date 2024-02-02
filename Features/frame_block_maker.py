@@ -12,9 +12,6 @@ def windows():
     canvaswind = Tk()
     canvaswind.title("Canvas menu")
     canvaswind.geometry("600x400")
-    actionwind = Toplevel(canvaswind)
-    actionwind.title("Debug menu")
-    actionwind.geometry("200x100")
 
 def basic_snap(movingwidget):
     widgets = {}
@@ -54,7 +51,13 @@ def snap_log(movingwidget, stillwidget):
 def block_spawner(block):
     #This will spawn a block on the canvas
     #Could also have another function that spawns all block instead of doing each one
-    widget_id = DraggableButton(canvaswind, text=block["name"])
+    widget_id = DraggableFrame(canvaswind)
+    #I need a code that splits a text into a list
+    texts = block["name"].split("{}")
+    step = 0
+    for text in texts:
+        DraggableLabel(widget_id, text=text).grid(row=0, column=step, padx=3, pady=3)
+        step += 2
     spawned_widgets[widget_id] = {
         "widget_id":widget_id,
         "snapped_to":None,
@@ -62,13 +65,18 @@ def block_spawner(block):
         "values":{}
         }
     #Gets the how many values and their type and sets it in the widget list and properties
+    step = 1
     for key in block["values"]:
-        spawned_widgets[widget_id]["values"][key]
-        
+        spawned_widgets[widget_id]["values"][key] = StringVar()
+        #This will create an entry that modifies the value of the dictionary
+        Entry(widget_id, textvariable= spawned_widgets[widget_id]["values"][key],width=7).grid(row=0, column=step, padx=3, pady=3)
+        step += 2
+    # widget_id.pack_propagate(False)
+    widget_id.pack()
 
-class DraggableButton(Button):
-    def __init__(self, master=None, **kwargs):
-        Button.__init__(self, master, **kwargs)
+class DraggableFrame(Frame):
+    def __init__(self, master=None,*args, **kwargs):
+        Frame.__init__(self, master,*args, **kwargs)
         self.bind("<ButtonPress-1>", self.on_press)
         self.bind("<Button-1>", self.on_drag_start)
         self.bind("<B1-Motion>", self.on_drag_motion)
@@ -99,39 +107,67 @@ class DraggableButton(Button):
         else:
             print("Button was pressed")
 
+class DraggableLabel(Label):
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.bind("<ButtonPress-1>", self.on_press)
+        self.bind("<Button-1>", self.on_drag_start)
+        self.bind("<B1-Motion>", self.on_drag_motion)
+        self.bind("<ButtonRelease-1>", self.on_release)
+
+    def on_press(self, event):
+        self.start_x = event.x
+        self.start_y = event.y
+        global dragging
+        dragging = False
+
+    def on_drag_start(self, event): #Happens when button is clicked or once when dragged
+        self._drag_start_x = event.x
+        self._drag_start_y = event.y
+        self.lift()
+        global dragging
+        dragging = True
+
+    def on_drag_motion(self, event): #Happens every frame the button is being actually dragged
+        x = self.master.winfo_x() - self._drag_start_x + event.x
+        y = self.master.winfo_y() - self._drag_start_y + event.y
+        self.master.place(x=x, y=y)
+
+    def on_release(self, event):
+        if dragging:
+            # print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
+            basic_snap(self.master)
+        else:
+            print("Button was pressed")
+
 def canvasmenu():
     # Create a draggable button
     global draggable_button, second_button #Only used for debug menu
-    draggable_button = DraggableButton(canvaswind, text="Drag Me", command=lambda: print("pressed!!!"))
-    draggable_button.pack()
-    second_button = DraggableButton(canvaswind, text="Drag Me\nToo")
-    second_button.pack()
-    
-    # Create a button to check the location
-    check_location_button = Button(actionwind, text="Check Location", command=get_button_location)
-    check_location_button.pack()
-    
-def actionmenu():
-    def add_button():
-        new_button = DraggableButton(canvaswind, text=f"Button {len(buttons) + 1}")
-        new_button.pack(pady=5)
-        buttons.append(new_button)
-        print(buttons)
-
-    def move_button(x, y):
-        draggable_button.place(x=x, y=y)
-    
-    buttons = []
-
-    # Create a button to add more buttons
-    add_button = Button(actionwind, text="Add Button", command=add_button)
-    add_button.pack(pady=10)
-    move_button_button = Button(actionwind, text="Move Button", command=lambda: move_button(100, 100))
-    move_button_button.pack()
+    frame_style = Style()
+    frame_style.configure("playground.TFrame", background="#2e2e2e")
+    draggable_frame = DraggableFrame(canvaswind, width=200, height=50) #, text="Drag Me")
+    draggable_frame.configure(style="playground.TFrame")  # Set background color
+    draggable_frame.pack_propagate(False)
+    draggable_frame.pack()
+    second_frame = DraggableFrame(canvaswind) #, text="Drag Me\nToo")
+    second_frame.pack()
+    block_spawner(block_test["2"])
     canvaswind.mainloop()
+    
 
-def get_button_location():
-    print("Button Location: x={}, y={}".format(draggable_button.winfo_x(), draggable_button.winfo_y()))
+block_test = {"2":{
+        "name":"Set Variable {} as {} as {}",
+        "btype":"block",
+        "color":"orange",
+        "code":"{} = {}",
+        "values":{
+            "name":"str",
+            "value":"any"
+        }
+    }
+    }
+
+
 # Function to get the current location of the button
 
 # def clear():
@@ -142,4 +178,3 @@ def get_button_location():
 spawned_widgets = {}
 windows()
 canvasmenu()
-actionmenu()
