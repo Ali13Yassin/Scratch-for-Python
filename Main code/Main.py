@@ -88,6 +88,13 @@ def playgroundmenu():
 
     Button(playground, text="playground", command=mainmenu).pack()
     Button(sidebar, text="sidebar", command=mainmenu).pack()
+    wind.protocol("WM_DELETE_WINDOW", on_closing)
     spawnplayground(wind)
 #------------------------------------<Playground End>-------------------------------------------------------
+#This function is called when the user tries to close the window
+def on_closing():
+    #Needs to check if the project has been saved or exported
+    if messagebox.askokcancel("Quit", "Do you want to quit without saving or exporting?"):
+        wind.destroy()
+
 start()

@@ -36,27 +36,29 @@ def basic_snap(movingwidget):
 def snap_log(movingwidget, stillwidget):
     global snaplog
     snaplog = []
-    recsnapped = {
-        "widget id": movingwidget,
-        "snapped to": stillwidget,
-        "block_id": "0",
-        "values": {
-            "valu1":["Hello world", "2"],
-            "valu2":["world hello", "2"],
-        }
-    }
+    spawned_widgets[movingwidget]["snapped_to"] = stillwidget
+    recsnapped = spawned_widgets[movingwidget]
     snaplog.append(recsnapped)
     print(snaplog)
 
+#Spawns a block with the given properties, and adds it to the spawned_widgets list 
 def block_spawner(block):
     #This will spawn a block on the canvas
     #Could also have another function that spawns all block instead of doing each one
     widget_id = DraggableFrame(canvaswind)
-    #I need a code that splits a text into a list
+    widget_id.config(cursor="hand2")
+    frame_style = Style()
+    frame_style.configure("{}.TFrame".format(widget_id), background="#2e2e2e")
+    widget_id.configure(style="{}.TFrame".format(widget_id))  # Set background color
+    #The {} only specifies where the entrys will be, the entrys will be placed at the end if not specified
     texts = block["name"].split("{}")
+    print(texts)
     step = 0
+    label_style = Style()
+    # Configure a new style for a specific label
+    label_style.configure("Custom.TLabel", foreground="white", background="#2e2e2e")
     for text in texts:
-        DraggableLabel(widget_id, text=text).grid(row=0, column=step, padx=3, pady=3)
+        DraggableLabel(widget_id, text=text, style="Custom.TLabel").grid(row=0, column=step, padx=3, pady=3)
         step += 2
     spawned_widgets[widget_id] = {
         "widget_id":widget_id,
@@ -66,6 +68,7 @@ def block_spawner(block):
         }
     #Gets the how many values and their type and sets it in the widget list and properties
     step = 1
+    #This will create the entrys for the specified values in block
     for key in block["values"]:
         spawned_widgets[widget_id]["values"][key] = StringVar()
         #This will create an entry that modifies the value of the dictionary
@@ -124,7 +127,7 @@ class DraggableLabel(Label):
     def on_drag_start(self, event): #Happens when button is clicked or once when dragged
         self._drag_start_x = event.x
         self._drag_start_y = event.y
-        self.lift()
+        self.master.lift()
         global dragging
         dragging = True
 
@@ -149,14 +152,24 @@ def canvasmenu():
     draggable_frame.configure(style="playground.TFrame")  # Set background color
     draggable_frame.pack_propagate(False)
     draggable_frame.pack()
-    second_frame = DraggableFrame(canvaswind) #, text="Drag Me\nToo")
+    second_frame = DraggableFrame(canvaswind, width=200, height=50) #, text="Drag Me\nToo")
     second_frame.pack()
+    #make a button that spawns a block
+    button = Button(canvaswind, text="Spawn Block", command=lambda: block_spawner(block_test["2"]))
+    button.pack()
+    button2 = Button(canvaswind, text="print", command=debug_print)
+    button2.pack()
     block_spawner(block_test["2"])
     canvaswind.mainloop()
     
+def debug_print():
+    for widget_id in spawned_widgets:
+        print(spawned_widgets[widget_id]["widget_id"])
+        for key in spawned_widgets[widget_id]["values"]:
+            print(spawned_widgets[widget_id]["values"][key].get())
 
 block_test = {"2":{
-        "name":"Set Variable {} as {} as {}",
+        "name":"Set Variable {} as {}",
         "btype":"block",
         "color":"orange",
         "code":"{} = {}",
@@ -164,8 +177,16 @@ block_test = {"2":{
             "name":"str",
             "value":"any"
         }
-    }
-    }
+    },
+    "custom":{
+        "name":"Custom code",
+        "btype":"block",
+        "color":"purple",
+        "code":"",
+        "values":{
+            "value1":"custom"
+        }
+    }}
 
 
 # Function to get the current location of the button
