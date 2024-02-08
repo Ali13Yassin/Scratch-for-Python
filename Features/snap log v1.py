@@ -65,8 +65,21 @@ def snap_lock(movingwidget, stillwidget):
     pass
 
 def detach(movingwidget):
-    #This will make sure the widget isn't locked to anything
-    print("Detached")
+    #This cleans up and resets the properties of the widget
+    if spawned_widgets[movingwidget]["parent"] != None:
+        if spawned_widgets[spawned_widgets[movingwidget]["parent"]]["parent"] == "self":
+            
+            spawned_widgets[spawned_widgets[movingwidget]["parent"]]["parent"] = None
+            for i in range(len(snaplog)):
+                if snaplog[i][0] == spawned_widgets[movingwidget]["parent"]:
+                    del snaplog[i]
+        else:
+            for i in range(len(snaplog)):
+                if snaplog[i][0] == spawned_widgets[movingwidget]["parent"]:
+                    snaplog[i].remove(movingwidget)
+                    break
+        spawned_widgets[movingwidget]["parent"] = None
+        spawned_widgets[movingwidget]["snapped_to"] = None
 
 #Spawns a block with the given properties, and adds it to the spawned_widgets list 
 def block_spawner(block):
