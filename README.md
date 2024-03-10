@@ -1,3 +1,4 @@
 # SFP project
 
- Took break a break to focus on Uni and it's projects
+Took a break to focus on Uni and it's projects
+First working version is yet to be released
