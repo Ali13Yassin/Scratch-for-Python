@@ -19,7 +19,7 @@ def basic_snap(movingwidget):
         widgets[str(widget)] = widget
     del widgets[str(movingwidget)]
     if ".!toplevel" in widgets:
-        del widgets[".!toplevel"] #Broken if window is closed
+        del widgets[".!toplevel"]
     for key in widgets:
         #Coordinates and size [X,Y,height,width], might change it to a dict for readaility
         solid_loc = [widgets[key].winfo_x(), widgets[key].winfo_y(), widgets[key].winfo_height(), widgets[key].winfo_width()]
@@ -30,16 +30,22 @@ def basic_snap(movingwidget):
                 print("Snapped to {}".format(key))
                 movingwidget.place(x=solid_loc[0], y=solid_loc[1]+solid_loc[2])
                 snap_log(movingwidget, widgets[key])
+                spawned_widgets[movingwidget]["snapping"] = [True, False]
                 snapped = True
-            elif solid_loc[1]-moving_loc[1] <= moving_loc[2]+15 and solid_loc[1]-moving_loc[1] >=0: #Checks if the button is ontop of the other one
-                print("Negative Snapped to {}".format(key))
-                movingwidget.place(x=solid_loc[0], y=solid_loc[1]-moving_loc[2])
-                snapped = True
+            # elif solid_loc[1]-moving_loc[1] <= moving_loc[2]+15 and solid_loc[1]-moving_loc[1] >=0: #Checks if the button is ontop of the other one
+            #     print("Negative Snapped to {}".format(key))
+            #     movingwidget.place(x=solid_loc[0], y=solid_loc[1]-moving_loc[2])
+            #     snapped = True
     if not snapped:
         detach(movingwidget)
 
 def snap_log(movingwidget, stillwidget):
     logger = []
+    #Makes sure the widget is cleaned if it was snapped to something before
+    if spawned_widgets[movingwidget]["snapped_to"] != None:
+        detach(movingwidget)
+
+    #If stillwidget wasn't not snapped to anything before    
     if spawned_widgets[stillwidget]["parent"] == None:
         spawned_widgets[movingwidget]["parent"] = stillwidget
         spawned_widgets[stillwidget]["parent"] = "self"
@@ -47,10 +53,12 @@ def snap_log(movingwidget, stillwidget):
         logger.insert(1, movingwidget)
         snaplog.append(logger)
 
+    #If the widget is snapped to a supposed parent, not supposed to happen!!!
     elif spawned_widgets[stillwidget]["parent"] == "self":
         # spawned_widgets[movingwidget]["parent"] = stillwidget
         print("Snapped to supposed parent {}".format(stillwidget))
 
+    #If the widget is snapped to a normal widget
     else:
         spawned_widgets[movingwidget]["parent"] = spawned_widgets[stillwidget]["parent"]
         # snaplog[spawned_widgets[stillwidget]["parent"]] 
@@ -63,16 +71,17 @@ def snap_log(movingwidget, stillwidget):
 def snap_lock(movingwidget, stillwidget):
     #This will lock the widget to the other widget
     pass
+    
 
 def detach(movingwidget):
     #This cleans up and resets the properties of the widget
-    if spawned_widgets[movingwidget]["parent"] != None:
-        if spawned_widgets[spawned_widgets[movingwidget]["parent"]]["parent"] == "self":
-            
-            spawned_widgets[spawned_widgets[movingwidget]["parent"]]["parent"] = None
+    if spawned_widgets[movingwidget]["parent"] != None: #Checks if the widget was snapped to something before
+        if spawned_widgets[spawned_widgets[movingwidget]["snapped_to"]]["parent"] == "self": #If the widget was snapped to a parent
+            spawned_widgets[spawned_widgets[movingwidget]["snapped_to"]]["parent"] = None #Resets the parent of the snapped_to
             for i in range(len(snaplog)):
                 if snaplog[i][0] == spawned_widgets[movingwidget]["parent"]:
                     del snaplog[i]
+                    break
         else:
             for i in range(len(snaplog)):
                 if snaplog[i][0] == spawned_widgets[movingwidget]["parent"]:
@@ -80,6 +89,7 @@ def detach(movingwidget):
                     break
         spawned_widgets[movingwidget]["parent"] = None
         spawned_widgets[movingwidget]["snapped_to"] = None
+        spawned_widgets[movingwidget]["snapping"] = [True, True]
 
 #Spawns a block with the given properties, and adds it to the spawned_widgets list 
 def block_spawner(block):
@@ -103,7 +113,7 @@ def block_spawner(block):
         "widget_id":widget_id,
         "snapped_to":None,
         "parent":None,
-        "parent":None,
+        "snaping":[True, True],
         "block_id":block["btype"],
         "values":{}
         }
