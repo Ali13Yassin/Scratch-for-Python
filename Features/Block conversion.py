@@ -1,3 +1,5 @@
+# This file is used to convert the block data into code. 
+
 def conversion(blocks):
     for block in blocks:
         code = block_data[block["block_id"]]["code"]

@@ -4,6 +4,8 @@ from tkinter import messagebox #This is a function that allows making windows me
 from tkinter.ttk import * #Theamed tkinter which makes the UI look ever so slightly modern
 import os
 from pathlib import Path
+
+#My modules
 from playground import *
 
 os.chdir(Path(__file__).parent) #Changes cmd directory to the one that has the py file
