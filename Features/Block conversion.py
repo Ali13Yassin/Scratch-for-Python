@@ -75,6 +75,7 @@ block_data = {
         }
     }
 }
+
 block_types = {
     "0":{
         "block_img":"img",

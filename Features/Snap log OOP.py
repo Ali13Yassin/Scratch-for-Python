@@ -1,5 +1,3 @@
-#The first step of converting snap log to OOP as it makes more sense to make this project in OOP
-
 #------------------------------------<Initialization Start>-------------------------------------------------------
 from tkinter import * #The UI module that this program relies on
 from tkinter import messagebox #This is a function that allows making windows message boxes, has to be called separetly
@@ -97,7 +95,7 @@ def detach(movingwidget):
 def block_spawner(block):
     #This will spawn a block on the canvas
     #Could also have another function that spawns all block instead of doing each one
-    widget_id = DraggableFrame(canvaswind)
+    widget_id = Block(canvaswind)
     widget_id.config(cursor="hand2")
     frame_style = Style()
     frame_style.configure("{}.TFrame".format(widget_id), background="#2e2e2e")
@@ -109,7 +107,7 @@ def block_spawner(block):
     # Configure a new style for a specific label
     label_style.configure("Custom.TLabel", foreground="white", background="#2e2e2e")
     for text in texts:
-        DraggableLabel(widget_id, text=text, style="Custom.TLabel").grid(row=0, column=step, padx=3, pady=3)
+        Block(widget_id, text=text, style="Custom.TLabel").grid(row=0, column=step, padx=3, pady=3)
         step += 2
     spawned_widgets[widget_id] = {
         "widget_id":widget_id,
@@ -130,14 +128,21 @@ def block_spawner(block):
     # widget_id.pack_propagate(False)
     widget_id.pack()
 
-class DraggableFrame(Frame):
+class Block(Label):
+    widget_id = None #ID of widget
+    snapped_to = None #ID of widget on top
+    parent = None #ID of the widget on top of all
+    snapping = None 
+    block_id = None
+    values = {}
+
     def __init__(self, master=None,*args, **kwargs):
         Frame.__init__(self, master,*args, **kwargs)
         self.bind("<ButtonPress-1>", self.on_press)
         self.bind("<Button-1>", self.on_drag_start)
         self.bind("<B1-Motion>", self.on_drag_motion)
         self.bind("<ButtonRelease-1>", self.on_release)
-        
+
     def on_press(self, event):
         self.start_x = event.x
         self.start_y = event.y
@@ -163,45 +168,18 @@ class DraggableFrame(Frame):
         else:
             print("Button was pressed")
 
-class DraggableLabel(Label):
-    def __init__(self, master=None, **kwargs):
-        super().__init__(master, **kwargs)
-        self.bind("<ButtonPress-1>", self.on_press)
-        self.bind("<Button-1>", self.on_drag_start)
-        self.bind("<B1-Motion>", self.on_drag_motion)
-        self.bind("<ButtonRelease-1>", self.on_release)
+    def set_coordinates(self, x, y):
+        self.place(x=x, y=y)
 
-    def on_press(self, event):
-        self.start_x = event.x
-        self.start_y = event.y
-        global dragging
-        dragging = False
 
-    def on_drag_start(self, event): #Happens when button is clicked or once when dragged
-        self._drag_start_x = event.x
-        self._drag_start_y = event.y
-        self.master.lift()
-        global dragging
-        dragging = True
 
-    def on_drag_motion(self, event): #Happens every frame the button is being actually dragged
-        x = self.master.winfo_x() - self._drag_start_x + event.x
-        y = self.master.winfo_y() - self._drag_start_y + event.y
-        self.master.place(x=x, y=y)
-
-    def on_release(self, event):
-        if dragging:
-            # print("{} Location: x={}, y={}".format(self, self.winfo_x(), self.winfo_y()))
-            basic_snap(self.master)
-        else:
-            print("Button was pressed")
 
 def canvasmenu():
     # Create a draggable button
     global draggable_button, second_button #Only used for debug menu
     frame_style = Style()
     frame_style.configure("playground.TFrame", background="#2e2e2e")
-    draggable_frame = DraggableFrame(canvaswind, width=200, height=50) #, text="Drag Me")
+    draggable_frame = Block(canvaswind, width=200, height=50) #, text="Drag Me")
     draggable_frame.configure(style="playground.TFrame")  # Set background color
     draggable_frame.pack_propagate(False)
     draggable_frame.pack()
