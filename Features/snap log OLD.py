@@ -15,27 +15,22 @@ def windows():
 
 def basic_snap(movingwidget):
     widgets = {}
-    #This will get all the widgets in the canvas
     for widget in canvaswind.winfo_children():
-        widgets[str(widget)] = widget #Stores the widget in a dictionary with the key being the string of the widget
-    del widgets[str(movingwidget)] #Deletes the moving widget from the list so it doesn't snap to itself
-    if ".!toplevel" in widgets: #Deletes the toplevel widget that is created when the window is created
+        widgets[str(widget)] = widget
+    del widgets[str(movingwidget)]
+    if ".!toplevel" in widgets:
         del widgets[".!toplevel"]
-
-    #This will find the closest widget to snap to
     for key in widgets:
         #Coordinates and size [X,Y,height,width], might change it to a dict for readaility
-        #TODO: Rename for readability
         solid_loc = [widgets[key].winfo_x(), widgets[key].winfo_y(), widgets[key].winfo_height(), widgets[key].winfo_width()]
         moving_loc = [movingwidget.winfo_x(), movingwidget.winfo_y(), movingwidget.winfo_height(), movingwidget.winfo_width()]
         snapped = False
         if moving_loc[0]-solid_loc[0] <= 25 and moving_loc[0]-solid_loc[0] >= -25:
             if moving_loc[1]-solid_loc[1] <= solid_loc[2]+25 and moving_loc[1]-solid_loc[1] >=0:
-                print("Snapped to {}".format(key)) #Debugging
-                #Snaps the widget to the top of the other widget
-                movingwidget.place(x=solid_loc[0], y=solid_loc[1]+solid_loc[2]) 
-                snap_log(movingwidget, widgets[key]) #Logs the snap
-                movingwidget.snapping = [False, True]
+                print("Snapped to {}".format(key))
+                movingwidget.place(x=solid_loc[0], y=solid_loc[1]+solid_loc[2])
+                snap_log(movingwidget, widgets[key])
+                spawned_widgets[movingwidget]["snapping"] = [True, False]
                 snapped = True
             # elif solid_loc[1]-moving_loc[1] <= moving_loc[2]+15 and solid_loc[1]-moving_loc[1] >=0: #Checks if the button is ontop of the other one
             #     print("Negative Snapped to {}".format(key))
@@ -47,31 +42,31 @@ def basic_snap(movingwidget):
 def snap_log(movingwidget, stillwidget):
     logger = []
     #Makes sure the widget is cleaned if it was snapped to something before
-    if movingwidget.snapped_to != None:
+    if spawned_widgets[movingwidget]["snapped_to"] != None:
         detach(movingwidget)
 
-    #If stillwidget wasn't not snapped to anything before
-    if stillwidget.parent == None:
-        movingwidget.parent = stillwidget
-        stillwidget.parent = "self"
+    #If stillwidget wasn't not snapped to anything before    
+    if spawned_widgets[stillwidget]["parent"] == None:
+        spawned_widgets[movingwidget]["parent"] = stillwidget
+        spawned_widgets[stillwidget]["parent"] = "self"
         logger.insert(0, stillwidget)
         logger.insert(1, movingwidget)
         snaplog.append(logger)
 
     #If the widget is snapped to a supposed parent, not supposed to happen!!!
-    elif stillwidget.parent == "self":
-        # movingwidget.parent = stillwidget #This will make the widget a child of the supposed parent
-        print("Snapped to 'supposed parent' {}".format(stillwidget))
+    elif spawned_widgets[stillwidget]["parent"] == "self":
+        # spawned_widgets[movingwidget]["parent"] = stillwidget
+        print("Snapped to supposed parent {}".format(stillwidget))
 
     #If the widget is snapped to a normal widget
     else:
-        movingwidget.parent = stillwidget.parent #Inherits the parent of the widget it is snapped to
-        # snaplog[spawned_widgets[stillwidget]["parent"]] TODO
+        spawned_widgets[movingwidget]["parent"] = spawned_widgets[stillwidget]["parent"]
+        # snaplog[spawned_widgets[stillwidget]["parent"]] 
         for i in range(len(snaplog)):
-            if snaplog[i][0] == stillwidget.parent:
+            if snaplog[i][0] == spawned_widgets[stillwidget]["parent"]:
                 snaplog[i].append(movingwidget)
                 break
-    movingwidget.snapped_to = stillwidget
+    spawned_widgets[movingwidget]["snapped_to"] = stillwidget
 
 def snap_lock(movingwidget, stillwidget):
     #This will lock the widget to the other widget
@@ -80,33 +75,28 @@ def snap_lock(movingwidget, stillwidget):
 
 def detach(movingwidget):
     #This cleans up and resets the properties of the widget
-    if movingwidget.parent != None: #Checks if the widget was snapped to something before
-        
-        #Get parent of widget then check it's type
-        widgets_parent = movingwidget.snapped_to
-        if widgets_parent.parent == "self": #If the widget was snapped to a parent
-            widgets_parent.parent = None #Resets the parent of the snapped_to
+    if spawned_widgets[movingwidget]["parent"] != None: #Checks if the widget was snapped to something before
+        if spawned_widgets[spawned_widgets[movingwidget]["snapped_to"]]["parent"] == "self": #If the widget was snapped to a parent
+            spawned_widgets[spawned_widgets[movingwidget]["snapped_to"]]["parent"] = None #Resets the parent of the snapped_to
             for i in range(len(snaplog)):
-                if snaplog[i][0] == movingwidget.parent:
+                if snaplog[i][0] == spawned_widgets[movingwidget]["parent"]:
                     del snaplog[i]
                     break
         else:
-            #Removes the widget from the parent
             for i in range(len(snaplog)):
-                if snaplog[i][0] == movingwidget.parent:
+                if snaplog[i][0] == spawned_widgets[movingwidget]["parent"]:
                     snaplog[i].remove(movingwidget)
                     break
-        movingwidget.parent = None
-        movingwidget.snapped_to = None
-        movingwidget.snapping = [True, True]
+        spawned_widgets[movingwidget]["parent"] = None
+        spawned_widgets[movingwidget]["snapped_to"] = None
+        spawned_widgets[movingwidget]["snapping"] = [True, True]
 
 #Spawns a block with the given properties, and adds it to the spawned_widgets list 
-#TODO: Make it only spawn the GUI and not the properties
 def block_spawner(block):
     #This will spawn a block on the canvas
     #Could also have another function that spawns all block instead of doing each one
-    widget_id = Block(canvaswind)
-    widget_id.config(cursor="hand2") 
+    widget_id = DraggableFrame(canvaswind)
+    widget_id.config(cursor="hand2")
     frame_style = Style()
     frame_style.configure("{}.TFrame".format(widget_id), background="#2e2e2e")
     widget_id.configure(style="{}.TFrame".format(widget_id))  # Set background color
@@ -119,40 +109,33 @@ def block_spawner(block):
     for text in texts:
         DraggableLabel(widget_id, text=text, style="Custom.TLabel").grid(row=0, column=step, padx=3, pady=3)
         step += 2
-
-    widget_id.widget_id = widget_id #TODO: might cause issues
-    widget_id.snapped_to = None
-    widget_id.parent = None
-    widget_id.snapping = [True, True]
-    widget_id.block_id = block["btype"]
-    widget_id.values = {}
-    spawned_blocks.append(widget_id) #Logs blocks
+    spawned_widgets[widget_id] = {
+        "widget_id":widget_id,
+        "snapped_to":None,
+        "parent":None,
+        "snaping":[True, True],
+        "block_id":block["btype"],
+        "values":{}
+        }
     #Gets the how many values and their type and sets it in the widget list and properties
     step = 1
     #This will create the entrys for the specified values in block
     for key in block["values"]:
-        widget_id.values[key] = StringVar()
+        spawned_widgets[widget_id]["values"][key] = StringVar()
         #This will create an entry that modifies the value of the dictionary
-        Entry(widget_id, textvariable= widget_id.values[key],width=7).grid(row=0, column=step, padx=3, pady=3)
+        Entry(widget_id, textvariable= spawned_widgets[widget_id]["values"][key],width=7).grid(row=0, column=step, padx=3, pady=3)
         step += 2
     # widget_id.pack_propagate(False)
     widget_id.pack()
 
-class Block(Frame):
+class DraggableFrame(Frame):
     def __init__(self, master=None,*args, **kwargs):
-        self.widget_id = None #ID of widget
-        self.snapped_to = None #ID of widget on top
-        self.parent = None #ID of the widget on top of all
-        self.snapping = [False, False]  #[Top, Bottom]If the widget is allowed to snap to top or bottom
-        self.block_id = None #Type of block
-        self.values = {} #Stores the values of the block
-
         Frame.__init__(self, master,*args, **kwargs)
         self.bind("<ButtonPress-1>", self.on_press)
         self.bind("<Button-1>", self.on_drag_start)
         self.bind("<B1-Motion>", self.on_drag_motion)
         self.bind("<ButtonRelease-1>", self.on_release)
-
+        
     def on_press(self, event):
         self.start_x = event.x
         self.start_y = event.y
@@ -177,9 +160,6 @@ class Block(Frame):
             basic_snap(self)
         else:
             print("Button was pressed")
-
-    def set_coordinates(self, x, y):
-        self.place(x=x, y=y)
 
 class DraggableLabel(Label):
     def __init__(self, master=None, **kwargs):
@@ -219,7 +199,7 @@ def canvasmenu():
     global draggable_button, second_button #Only used for debug menu
     frame_style = Style()
     frame_style.configure("playground.TFrame", background="#2e2e2e")
-    draggable_frame = Block(canvaswind, width=200, height=50) #, text="Drag Me")
+    draggable_frame = DraggableFrame(canvaswind, width=200, height=50) #, text="Drag Me")
     draggable_frame.configure(style="playground.TFrame")  # Set background color
     draggable_frame.pack_propagate(False)
     draggable_frame.pack()
@@ -232,16 +212,14 @@ def canvasmenu():
     button3.pack()
     button4 = Button(canvaswind, text="print spawned widgets", command=lambda: print(spawned_widgets))
     button4.pack()
-    button5 = Button(canvaswind, text="print spawned blocks", command=lambda: print(spawned_blocks))
-    button5.pack()
     block_spawner(block_test["2"])
     canvaswind.mainloop()
     
 def debug_print():
-    for widget_id in spawned_blocks:
-        print(widget_id.widget_id)
-        for key in widget_id.values:
-            print(widget_id.values[key].get())
+    for widget_id in spawned_widgets:
+        print(spawned_widgets[widget_id]["widget_id"])
+        for key in spawned_widgets[widget_id]["values"]:
+            print(spawned_widgets[widget_id]["values"][key].get())
 
 block_test = {"2":{
         "name":"Set Variable {} as {}",
@@ -264,9 +242,8 @@ block_test = {"2":{
     }}
 
 # Run the Tkinter event loop
-global snaplog, spawned_widgets, spawned_blocks
+global snaplog, spawned_widgets
 snaplog = []
 spawned_widgets = {}
-spawned_blocks = []
 windows()
 canvasmenu()

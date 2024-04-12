@@ -1,7 +1,7 @@
 
 # SFP project (Scratch for Python)
 
-A program that helps new Python coders learn how to program using visual code, The scratch way, the output is in Python
+A program that helps new Python coders learn how to program using visual code, The scratch way, the output is in Python (Should probably find a better name)
 ## Features
 
 - Visual code
