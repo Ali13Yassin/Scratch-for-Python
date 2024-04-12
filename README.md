@@ -21,13 +21,11 @@ A program that helps new Python coders learn how to program using visual code, T
 - Shortcuts
 - Localization
 
-## Demo
-
-Insert gif or link to demo
-
 
 ## Known bugs
 - Version 0.1 not released yet so no bugs are recorded
+
+
 ## Feedback
 
 If you have any feedback, please reach out to me using issues
