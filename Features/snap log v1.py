@@ -17,7 +17,9 @@ def basic_snap(movingwidget):
     widgets = {}
     #This will get all the widgets in the canvas
     for widget in canvaswind.winfo_children():
-        widgets[str(widget)] = widget #Stores the widget in a dictionary with the key being the string of the widget
+        if isinstance(widget, Block): #Checks if the widget is a block
+            widgets[str(widget)] = widget #Stores the widget in a dictionary with the key being the string of the widget
+            
     del widgets[str(movingwidget)] #Deletes the moving widget from the list so it doesn't snap to itself
     if ".!toplevel" in widgets: #Deletes the toplevel widget that is created when the window is created
         del widgets[".!toplevel"]
@@ -49,7 +51,9 @@ def snap_log(movingwidget, stillwidget):
     #Makes sure the widget is cleaned if it was snapped to something before
     if movingwidget.snapped_to != None:
         detach(movingwidget)
-
+    if movingwidget.parent == "self": #If the widget was a parent
+        #Do something I dunno, kill me
+        pass
     #If stillwidget wasn't not snapped to anything before
     if stillwidget.parent == None:
         movingwidget.parent = stillwidget
@@ -81,10 +85,15 @@ def snap_lock(movingwidget, stillwidget):
 def detach(movingwidget):
     #This cleans up and resets the properties of the widget
     if movingwidget.parent != None: #Checks if the widget was snapped to something before
-        
         #Get parent of widget then check it's type
         widgets_parent = movingwidget.snapped_to
-        if widgets_parent.parent == "self": #If the widget was snapped to a parent
+        if movingwidget.parent == "self": #If the widget was A parent
+            movingwidget.parent = None #Resets the parent of the snapped_to
+            for i in range(len(snaplog)):
+                if snaplog[i][0] == movingwidget:
+                    del snaplog[i]
+                    break
+        elif widgets_parent.parent == "self": #If the widget was snapped to a parent
             widgets_parent.parent = None #Resets the parent of the snapped_to
             for i in range(len(snaplog)):
                 if snaplog[i][0] == movingwidget.parent:
@@ -96,6 +105,7 @@ def detach(movingwidget):
                 if snaplog[i][0] == movingwidget.parent:
                     snaplog[i].remove(movingwidget)
                     break
+        print("Detached {}".format(movingwidget))
         movingwidget.parent = None
         movingwidget.snapped_to = None
         movingwidget.snapping = [True, True]
@@ -234,6 +244,8 @@ def canvasmenu():
     button4.pack()
     button5 = Button(canvaswind, text="print spawned blocks", command=lambda: print(spawned_blocks))
     button5.pack()
+    button6 = Button(canvaswind, text="print parents", command=debug_parents)
+    button6.pack()
     block_spawner(block_test["2"])
     canvaswind.mainloop()
     
@@ -242,6 +254,9 @@ def debug_print():
         print(widget_id.widget_id)
         for key in widget_id.values:
             print(widget_id.values[key].get())
+def debug_parents():
+    for widget_id in spawned_blocks:
+        print("{} --> {}".format(widget_id.widget_id, widget_id.parent))
 
 block_test = {"2":{
         "name":"Set Variable {} as {}",

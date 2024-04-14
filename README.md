@@ -10,7 +10,8 @@ A program that helps new Python coders learn how to program using visual code, T
 
 ## Roadmap
 
-- If/Else & loops (Control blocks) next update"
+- Small blocks (Variables, operations)
+- If/Else & loops (Control blocks)
 - Better UI design
 - Add more integrations
 - Save & Load projects
