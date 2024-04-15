@@ -1,4 +1,4 @@
-#Version 0.1 (Pre-Alpha)
+#Version 0.1 (Alpha)
 #This code transfers the block data into code through these steps
 #1.Use id to get the "code"
 #2.Get how many values are in block

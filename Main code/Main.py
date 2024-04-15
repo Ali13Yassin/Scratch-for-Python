@@ -19,19 +19,19 @@ os.chdir(Path(__file__).parent) #Changes cmd directory to the one that has the p
 #     quit()
 
 #Checks if the debug file exists, and if it does, imports it
-if os.path.exists("debug.py"):
-    from debug import * #The library I made that handles backend operations
-    debugging = True
-else:
-    debugging = False
+#if os.path.exists("debug.py"):
+#    from debug import * #The library I made that handles backend operations
+#    debugging = True
+#else:
+#    debugging = False
 
 #Starts the program
 def start():
     # filecheck()#Checks if other database files exist and creates them
     window() #Defines properties of the main window
     mainmenu() #The first menu to the application
-    if debugging:
-        load_debug(wind) #Loads the debug menu
+#    if debugging:
+#        load_debug(wind) #Loads the debug menu
     wind.mainloop() #Makes the window apear
 
 def window():
@@ -80,7 +80,8 @@ def playgroundmenu():
     total_width = wind.winfo_width()
 
     frame_style = Style()
-    frame_style.configure("playground.TFrame", background="#2e2e2e")
+#    frame_style.configure("playground.TFrame", background="#2e2e2e")
+    frame_style.configure("playground.TFrame", background="white")
     playground = Frame(div, style="playground.TFrame")
     playground.place(relx=0, rely=0, relwidth=0.7, relheight=1)
 
