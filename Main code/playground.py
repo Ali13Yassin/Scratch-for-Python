@@ -7,11 +7,13 @@ from pathlib import Path #Used to get the path to the python file
 
 os.chdir(Path(__file__).parent)
 
+global parent
 parent = None
 
 def basic_snap(movingwidget):
     widgets = {}
     #This will get all the widgets in the canvas
+    print(parent)
     for widget in parent.winfo_children():
         if isinstance(widget, Block): #Checks if the widget is a block
             widgets[str(widget)] = widget #Stores the widget in a dictionary with the key being the string of the widget
@@ -174,7 +176,7 @@ def block_spawner(block):
         DraggableLabel(widget_id, text=text, style="Custom.TLabel").grid(row=0, column=step, padx=3, pady=3)
         step += 2
 
-    widget_id.widget_id = widget_id #TODO: might cause issues
+    widget_id.widget_id = block["key"] #TODO: might cause issues
     widget_id.snapped_to = None
     widget_id.parent = None
     widget_id.snapping = [True, True]
@@ -185,9 +187,9 @@ def block_spawner(block):
     step = 1
     #This will create the entrys for the specified values in block
     for key in block["values"]:
-        widget_id.values[key] = StringVar()
+        widget_id.values[key] = [StringVar(),"2"]
         #This will create an entry that modifies the value of the dictionary
-        name = Entry(widget_id, textvariable= widget_id.values[key],width=7).grid(row=0, column=step, padx=3, pady=3)
+        name = Entry(widget_id, textvariable= widget_id.values[key][0],width=7).grid(row=0, column=step, padx=3, pady=3)
         step += 2
     # widget_id.pack_propagate(False)
     widget_id.pack()
@@ -220,9 +222,9 @@ def small_block_spawner(block):
     step = 1
     #This will create the entrys for the specified values in block
     for key in block["values"]:
-        widget_id.values[key] = StringVar()
+        widget_id.values[key] = [StringVar(),2]
         #This will create an entry that modifies the value of the dictionary
-        Entry(widget_id, textvariable= widget_id.values[key],width=7).grid(row=0, column=step, padx=3, pady=3)
+        Entry(widget_id, textvariable= widget_id.values[key][0],width=7).grid(row=0, column=step, padx=3, pady=3)
         step += 2
     # widget_id.pack_propagate(False)
     widget_id.pack()
@@ -268,6 +270,15 @@ class Block(Frame):
 
     def set_coordinates(self, x, y):
         self.place(x=x, y=y)
+
+    def get_variables(self):
+        self.widget_id      #ID of widget
+        self.snapped_to     #ID of widget on top
+        self.parent         #ID of the widget on top of all
+        self.snapping       #[Top, Bottom]If the widget is allowed to snap to top or bottom
+        self.block_id       #Type of block
+        self.values         #Stores the values of the block
+
 
 class DraggableLabel(Label):
     def __init__(self, master=None, **kwargs):
@@ -331,6 +342,7 @@ block_test = {"2":{
     },
     "3":{
         "name":"Print {}",
+        "key":"3",
         "btype":"block",
         "color":"blue",
         "code":"print({})",
@@ -373,6 +385,7 @@ spawned_widgets = {}
 spawned_blocks = []
 
 def spawnplayground(Parent): #Should spawn all buttons in all_widgets
+    global parent
     parent = Parent
-    block_spawner(block_test["2"])
+    block_spawner(block_test["3"])
     block_spawner(block_test["3"])

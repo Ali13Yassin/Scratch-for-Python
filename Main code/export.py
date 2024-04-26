@@ -27,5 +27,5 @@ def runcode(filename): #Can be used to run the user's project after completion
     subprocess.Popen(r'explorer /select,{}'.format(filename))
         
 #Example of how this funtion needs to be called
-savepy("Test","print('This code works too!')")
-runcode("start_menu.py")
+# savepy("Test","print('This code works too!')")
+# runcode("start_menu.py")

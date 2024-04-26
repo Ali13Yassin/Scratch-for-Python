@@ -2,6 +2,8 @@
 # SFP project (Scratch for Python)
 
 A program that helps new Python coders learn how to program using visual code, The scratch way, the output is in Python (Should probably find a better name)
+
+V 0.1 (Alpha) this is pretty much a proof of concept
 ## Features
 
 - Visual code
@@ -24,7 +26,8 @@ A program that helps new Python coders learn how to program using visual code, T
 
 
 ## Known bugs
-- Version 0.1 not released yet so no bugs are recorded
+- Some blocks and their placement may not be registered.
+- 
 
 
 ## Feedback
@@ -36,21 +39,9 @@ If you have any feedback, please reach out to me using issues
 
 Just download the code and run the main.py
     
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
-
 ## Contributing
 
 Contributions are always welcome!
-
-
-
-## Documentation
-
-[Documentation](https://linktodocumentation)
-
 
 ## 🚀 About Me
 I'am a freshman computer science student at ElSewedy University

@@ -72,6 +72,12 @@ def openmenu():
 def clear():
     for widget in div.winfo_children():
         widget.destroy() #Used this instead of forget to clear memory
+
+def init_compile():
+    import Compiler
+    Compiler.startcompile("Project 1", snaplog)
+    #This should gather data from all blocks and sent them to compile.py
+
 #------------------------------------<Initialization End>-------------------------------------------------------
 #------------------------------------<Playground start>-------------------------------------------------------
 def playgroundmenu():
@@ -80,7 +86,7 @@ def playgroundmenu():
     total_width = wind.winfo_width()
 
     frame_style = Style()
-#    frame_style.configure("playground.TFrame", background="#2e2e2e")
+    #frame_style.configure("playground.TFrame", background="#2e2e2e")
     frame_style.configure("playground.TFrame", background="white")
     playground = Frame(div, style="playground.TFrame")
     playground.place(relx=0, rely=0, relwidth=0.7, relheight=1)
@@ -90,7 +96,9 @@ def playgroundmenu():
     sidebar.place(relx=0.7, rely=0, relwidth=0.3, relheight=1)
 
     Button(playground, text="playground", command=mainmenu).pack()
-    Button(sidebar, text="sidebar", command=mainmenu).pack()
+    Button(sidebar, text="Spawn Print block", command=lambda: block_spawner(block_test["3"])).pack()
+    Button(sidebar, text="Compile and export", command=init_compile).pack()
+
     wind.protocol("WM_DELETE_WINDOW", on_closing)
     spawnplayground(wind)
 #------------------------------------<Playground End>-------------------------------------------------------

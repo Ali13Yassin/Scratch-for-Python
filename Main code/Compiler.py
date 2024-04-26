@@ -31,6 +31,12 @@ all_blocks = {
             "name":"str",
             "value":"any"
         }
+    },"3":{
+        "name":"print {}",
+        "btype":"1",
+        "color":"blue",
+        "code":"print({})",
+        "num_values":1
     },
     "custom":{
         "name":"Custom code",
@@ -76,18 +82,21 @@ var_types = {
 
 def compileblocks(blocks):
     lines = ""
-    for block in blocks:
-        var = [] #This will store all the values to format into the code
-        code = all_blocks[block["block_id"]]["code"] #Get the code
-        for key in block["values"]:
-            if block["values"][key][1].isdigit(): #If value type is a number
-                varcode = var_types[block["values"][key][1]]["code"] #Get the code for the value type
-                var.append(varcode.format(block["values"][key][0])) #Add the value to the var list
-            else:
-                var.append(smol_compile(key, block["values"][key])) #Add the value to the var list
-        line = code.format(*var) #Format the code with the values
-        lines = lines + line + "\n" #Add the line to the total code
-    return lines #Return the total code
+    for thread in blocks: #temporary workaround for multiple threads
+        for block in thread:
+            var = [] #This will store all the values to format into the code
+            code = all_blocks[block.widget_id]["code"] #Get the code
+            for key in block.values:
+                #Facing issue cuz I competely forgot about the value type and didn't implement it
+                if block.values[key][1].isdigit(): #If value type is a number
+                    varcode = var_types[block.values[key][1]]["code"] #Get the code for the value type
+                    var.append(varcode.format(block.values[key][0].get())) #Add the value to the var list
+                else:
+                    var.append(smol_compile(key, block["values"][key])) #Add the value to the var list
+            line = code.format(*var) #Format the code with the values
+            lines = lines + line + "\n" #Add the line to the total code
+        print(lines)
+        return lines #Return the total code
 
 #This will compile the values inside the small blocks and return code
 def smol_compile(key, value): 
@@ -123,4 +132,3 @@ blocks = [
 def startcompile(projname, blocks):
     lines = compileblocks(blocks)
     savepy(projname, lines)
-print(compileblocks(blocks))
